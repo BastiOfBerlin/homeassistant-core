@@ -37,7 +37,7 @@ _SECOND_RECIPIENT_SUBENTRY: ConfigSubentryDataWithId = {
 async def test_notify_entity_created(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
-    mock_credentials: AsyncMock,
+    mock_get_credits: AsyncMock,
     mock_send_message: AsyncMock,
     entity_registry: er.EntityRegistry,
 ) -> None:
@@ -60,7 +60,7 @@ async def test_notify_entity_created(
 async def test_notify_entities_get_separate_devices(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
-    mock_credentials: AsyncMock,
+    mock_get_credits: AsyncMock,
     mock_send_message: AsyncMock,
     entity_registry: er.EntityRegistry,
     device_registry: dr.DeviceRegistry,
@@ -95,7 +95,7 @@ async def test_notify_entities_get_separate_devices(
 async def test_notify_entity_not_created_without_subentry(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
-    mock_credentials: AsyncMock,
+    mock_get_credits: AsyncMock,
     mock_send_message: AsyncMock,
     entity_registry: er.EntityRegistry,
 ) -> None:
@@ -114,7 +114,7 @@ async def test_notify_entity_not_created_without_subentry(
 async def test_send_message_simple(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
-    mock_credentials: AsyncMock,
+    mock_get_credits: AsyncMock,
     mock_send_message: AsyncMock,
     entity_registry: er.EntityRegistry,
 ) -> None:
@@ -137,12 +137,14 @@ async def test_send_message_simple(
     )
 
     mock_send_message.assert_called_once_with(MOCK_RECIPIENT_ID, "Hello from tests!")
+    # Credits are refreshed once at setup and once after the send.
+    assert mock_get_credits.await_count == 2
 
 
 async def test_send_message_with_title(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
-    mock_credentials: AsyncMock,
+    mock_get_credits: AsyncMock,
     mock_send_message: AsyncMock,
     entity_registry: er.EntityRegistry,
 ) -> None:
@@ -176,7 +178,7 @@ async def test_send_message_with_title(
 async def test_send_message_e2e(
     hass: HomeAssistant,
     mock_config_entry_with_keys: MockConfigEntry,
-    mock_credentials: AsyncMock,
+    mock_get_credits: AsyncMock,
     mock_send_message: AsyncMock,
     entity_registry: er.EntityRegistry,
 ) -> None:
@@ -216,7 +218,7 @@ async def test_send_message_e2e(
 async def test_send_message_error(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
-    mock_credentials: AsyncMock,
+    mock_get_credits: AsyncMock,
     mock_send_message: AsyncMock,
     entity_registry: er.EntityRegistry,
     side_effect: Exception,
@@ -249,7 +251,7 @@ async def test_send_message_error(
 async def test_send_message_auth_error_triggers_reauth(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
-    mock_credentials: AsyncMock,
+    mock_get_credits: AsyncMock,
     mock_send_message: AsyncMock,
     entity_registry: er.EntityRegistry,
 ) -> None:

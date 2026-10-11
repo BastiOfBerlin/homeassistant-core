@@ -771,6 +771,7 @@ async def test_subentry_duplicate_recipient(
     assert result["reason"] == "already_configured"
 
 
+@pytest.mark.usefixtures("mock_get_credits")
 async def test_reauth_flow_success_before_setup(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,

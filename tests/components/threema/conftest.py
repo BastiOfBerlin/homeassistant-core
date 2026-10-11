@@ -25,6 +25,7 @@ MOCK_PRIVATE_KEY = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789ab
 MOCK_PUBLIC_KEY = "fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210"
 MOCK_RECIPIENT_ID = "ABCD1234"
 MOCK_SUBENTRY_ID = "mock_subentry_id"
+MOCK_CREDITS = 1000
 
 RECIPIENT_SUBENTRY: ConfigSubentryDataWithId = {
     "data": {CONF_RECIPIENT: MOCK_RECIPIENT_ID},
@@ -82,6 +83,17 @@ def mock_credentials() -> Generator[AsyncMock]:
     with patch(
         "homeassistant.components.threema.client.ThreemaAPIClient.validate_credentials",
         new_callable=AsyncMock,
+    ) as mock:
+        yield mock
+
+
+@pytest.fixture
+def mock_get_credits() -> Generator[AsyncMock]:
+    """Mock ThreemaAPIClient.get_credits to return a credits balance."""
+    with patch(
+        "homeassistant.components.threema.client.ThreemaAPIClient.get_credits",
+        new_callable=AsyncMock,
+        return_value=MOCK_CREDITS,
     ) as mock:
         yield mock
 

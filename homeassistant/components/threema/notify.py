@@ -10,9 +10,11 @@ from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
-from . import ThreemaConfigEntry
 from .client import ThreemaAuthError, ThreemaConnectionError, ThreemaSendError
 from .const import DOMAIN, SUBENTRY_TYPE_RECIPIENT
+from .coordinator import ThreemaConfigEntry
+
+PARALLEL_UPDATES = 0
 
 
 async def async_setup_entry(
@@ -42,7 +44,8 @@ class ThreemaNotifyEntity(NotifyEntity):
     ) -> None:
         """Initialize the notify entity."""
         self._entry = entry
-        self._client = entry.runtime_data
+        self._coordinator = entry.runtime_data
+        self._client = self._coordinator.client
         self._recipient_id: str = subentry.data[CONF_RECIPIENT]
 
         self._attr_unique_id = f"{self._client.gateway_id}_{self._recipient_id}"
@@ -71,3 +74,4 @@ class ThreemaNotifyEntity(NotifyEntity):
                 translation_key="send_error",
                 translation_placeholders={"error": str(err)},
             ) from err
+        await self._coordinator.async_request_refresh()

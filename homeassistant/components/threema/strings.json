@@ -82,6 +82,14 @@
       }
     }
   },
+  "entity": {
+    "sensor": {
+      "credits": {
+        "name": "Credits",
+        "unit_of_measurement": "credits"
+      }
+    }
+  },
   "exceptions": {
     "cannot_connect": {
       "message": "[%key:common::config_flow::error::cannot_connect%]"

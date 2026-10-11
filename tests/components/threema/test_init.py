@@ -19,7 +19,7 @@ from tests.common import MockConfigEntry
 async def test_setup_entry(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
-    mock_credentials: AsyncMock,
+    mock_get_credits: AsyncMock,
     mock_send_message: AsyncMock,
 ) -> None:
     """Test successful setup of a config entry."""
@@ -43,13 +43,13 @@ async def test_setup_entry(
 async def test_setup_entry_error(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
-    mock_credentials: AsyncMock,
+    mock_get_credits: AsyncMock,
     side_effect: Exception,
     expected_state: ConfigEntryState,
 ) -> None:
     """Test setup handles various errors correctly."""
     mock_config_entry.add_to_hass(hass)
-    mock_credentials.side_effect = side_effect
+    mock_get_credits.side_effect = side_effect
 
     await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
@@ -60,7 +60,7 @@ async def test_setup_entry_error(
 async def test_unload_entry(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
-    mock_credentials: AsyncMock,
+    mock_get_credits: AsyncMock,
     mock_send_message: AsyncMock,
 ) -> None:
     """Test unloading a config entry."""
@@ -78,7 +78,7 @@ async def test_unload_entry(
 async def test_update_listener_reloads(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
-    mock_credentials: AsyncMock,
+    mock_get_credits: AsyncMock,
     mock_send_message: AsyncMock,
 ) -> None:
     """Test that update listener reloads the entry."""
